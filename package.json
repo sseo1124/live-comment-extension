@@ -1,6 +1,6 @@
 {
-  "name": "wxt-react-starter",
-  "description": "manifest.json description",
+  "name": "live-comment",
+  "description": "Live comment is an web extension on real-time collaborate with commenting feedbacks on the webpage",
   "private": true,
   "version": "0.0.0",
   "type": "module",
