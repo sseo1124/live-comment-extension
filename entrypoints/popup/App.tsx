@@ -17,10 +17,14 @@ function App() {
         </a>
       </div>
 
-      <h1 className="text-xl font-semibold text-center text-gray-800">WXT + React</h1>
+      <h1 className="text-xl font-semibold text-center text-gray-800">
+        WXT + React
+      </h1>
 
       <div className="bg-gray-100 p-4 rounded-md shadow-inner flex flex-col items-center">
-        <Button onClick={() => setCount((count) => count + 1)}>Count is {count}</Button>
+        <Button onClick={() => setCount((count) => count + 1)}>
+          Count is {count}
+        </Button>
         <p className="text-sm mt-2 text-gray-600 text-center">
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
