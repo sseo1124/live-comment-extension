@@ -1,14 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import {
-  AtSign,
-  List,
-  Paperclip,
-  Plus,
-  SendHorizonal,
-  Smile,
-} from "lucide-react";
+import { AtSign, List, Paperclip, Plus, SendHorizonal, Smile } from "lucide-react";
 
 type ToolbarMode = "add" | "palette" | "list";
 
@@ -29,9 +22,7 @@ const createThreadId = () => {
 
 export default function ContentApp() {
   const [mode, setMode] = useState<ToolbarMode>("palette");
-  const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(
-    null
-  );
+  const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
   const [threads, setThreads] = useState<CommentThread[]>([]);
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -102,8 +93,8 @@ export default function ContentApp() {
               ...thread,
               text: value,
             }
-          : thread
-      )
+          : thread,
+      ),
     );
   };
 
@@ -190,9 +181,7 @@ export default function ContentApp() {
                 <textarea
                   id={`${thread.id}-input`}
                   value={thread.text}
-                  onChange={(event) =>
-                    handleThreadTextChange(thread.id, event.target.value)
-                  }
+                  onChange={(event) => handleThreadTextChange(thread.id, event.target.value)}
                   onFocus={() => setActiveThreadId(thread.id)}
                   placeholder="Write a comment..."
                   autoFocus={thread.id === activeThreadId}
