@@ -7,7 +7,7 @@ export default defineConfig({
   manifest: {
     web_accessible_resources: [
       {
-        resources: ["editor-main-world.js"],
+        resources: ["overlay-main-world.js"],
         matches: ["*://*/*"],
       },
     ],
