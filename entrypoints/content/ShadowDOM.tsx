@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import tailwindCss from "@/assets/tailwind.css?inline";
 
 type ShadowDOMProps = {
   container: HTMLDivElement;
@@ -17,6 +18,11 @@ export default function ShadowDOM({ container }: ShadowDOMProps) {
     outerShadowRoot.appendChild(host);
 
     const innerShadowRoot = host.attachShadow({ mode: "open" });
+
+    const innerStyle = document.createElement("style");
+    innerStyle.textContent = tailwindCss;
+    innerShadowRoot.appendChild(innerStyle);
+
     const reactRoot = document.createElement("div");
     innerShadowRoot.appendChild(reactRoot);
 
