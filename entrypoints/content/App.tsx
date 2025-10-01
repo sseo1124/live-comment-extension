@@ -9,10 +9,7 @@ import {
   SendHorizonal,
   Smile,
 } from "lucide-react";
-import { createEditor } from "slate";
-import { Slate, Editable, withReact } from "slate-react";
-import { BaseEditor, Descendant } from "slate";
-import { ReactEditor } from "slate-react";
+import Editor from "@/components/chateditor/Editor";
 
 type ToolbarMode = "add" | "palette" | "list";
 type CommentThread = {
@@ -21,24 +18,6 @@ type CommentThread = {
   y: number;
   text: string;
 };
-
-type CustomElement = { type: "paragraph"; children: CustomText[] };
-type CustomText = { text: string };
-
-declare module "slate" {
-  interface CustomTypes {
-    Editor: BaseEditor & ReactEditor;
-    Element: CustomElement;
-    Text: CustomText;
-  }
-}
-
-const initialValue: Descendant[] = [
-  {
-    type: "paragraph",
-    children: [{ text: "A line of text in a paragraph." }],
-  },
-];
 
 const createThreadId = () => {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -139,7 +118,6 @@ export default function ContentApp() {
       top: Math.min(Math.max(rawTop, padding), maxTop),
     };
   };
-  const [editor] = useState(() => withReact(createEditor()));
 
   return (
     <div ref={rootRef} data-live-comment-root="true">
@@ -191,9 +169,7 @@ export default function ContentApp() {
             <div className="flex items-start gap-3">
               <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-[radial-gradient(circle_at_30%_-10%,rgba(180,238,252,0.95),rgba(129,140,248,0.9))] shadow-[0_12px_40px_-18px_rgba(59,130,246,0.8)]" />
               <div className="w-[280px] rounded-2xl border border-zinc-200 bg-white/95 p-3 text-left shadow-[0_28px_65px_-32px_rgba(15,23,42,0.55)] backdrop-blur">
-                <Slate editor={editor} initialValue={initialValue}>
-                  <Editable />
-                </Slate>
+                <Editor />
                 <div className="mt-2 flex items-center justify-between text-zinc-400">
                   <div className="flex items-center gap-3">
                     <button
