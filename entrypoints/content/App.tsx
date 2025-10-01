@@ -9,20 +9,18 @@ import {
   SendHorizonal,
   Smile,
 } from "lucide-react";
+import { createEditor } from "slate";
+import { Slate, Editable, withReact } from "slate-react";
+import { BaseEditor, Descendant } from "slate";
+import { ReactEditor } from "slate-react";
 
 type ToolbarMode = "add" | "palette" | "list";
-
 type CommentThread = {
   id: string;
   x: number;
   y: number;
   text: string;
 };
-
-import { createEditor } from "slate";
-import { Slate, Editable, withReact } from "slate-react";
-import { BaseEditor, Descendant } from "slate";
-import { ReactEditor } from "slate-react";
 
 type CustomElement = { type: "paragraph"; children: CustomText[] };
 type CustomText = { text: string };
@@ -56,7 +54,6 @@ export default function ContentApp() {
     null
   );
   const [threads, setThreads] = useState<CommentThread[]>([]);
-  const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   const isAdding = mode === "add";
@@ -87,7 +84,6 @@ export default function ContentApp() {
           text: "",
         },
       ]);
-      setActiveThreadId(id);
       setMode("palette");
       setCursorPos(null);
       window.getSelection?.()?.removeAllRanges?.();
@@ -116,19 +112,6 @@ export default function ContentApp() {
       document.body.style.cursor = previousCursor;
     };
   }, [isAdding]);
-
-  const handleThreadTextChange = (id: string, value: string) => {
-    setThreads((prev) =>
-      prev.map((thread) =>
-        thread.id === id
-          ? {
-              ...thread,
-              text: value,
-            }
-          : thread
-      )
-    );
-  };
 
   const getThreadPosition = (thread: CommentThread) => {
     const padding = 24;
@@ -197,9 +180,6 @@ export default function ContentApp() {
               <List className="size-5" />
             </ToggleGroupItem>
           </ToggleGroup>
-          <Slate editor={editor} initialValue={initialValue}>
-            <Editable />
-          </Slate>
         </div>
       </div>
 
@@ -211,20 +191,9 @@ export default function ContentApp() {
             <div className="flex items-start gap-3">
               <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-[radial-gradient(circle_at_30%_-10%,rgba(180,238,252,0.95),rgba(129,140,248,0.9))] shadow-[0_12px_40px_-18px_rgba(59,130,246,0.8)]" />
               <div className="w-[280px] rounded-2xl border border-zinc-200 bg-white/95 p-3 text-left shadow-[0_28px_65px_-32px_rgba(15,23,42,0.55)] backdrop-blur">
-                <label className="sr-only" htmlFor={`${thread.id}-input`}>
-                  Write a comment
-                </label>
-                <textarea
-                  id={`${thread.id}-input`}
-                  value={thread.text}
-                  onChange={(event) =>
-                    handleThreadTextChange(thread.id, event.target.value)
-                  }
-                  onFocus={() => setActiveThreadId(thread.id)}
-                  placeholder="Write a comment..."
-                  autoFocus={thread.id === activeThreadId}
-                  className="min-h-[64px] w-full resize-none rounded-xl border border-transparent bg-white/80 px-3 py-2 text-sm text-zinc-700 outline-none ring-0 placeholder:text-zinc-400 focus:border-zinc-200 focus:bg-white focus:shadow-inner"
-                />
+                <Slate editor={editor} initialValue={initialValue}>
+                  <Editable />
+                </Slate>
                 <div className="mt-2 flex items-center justify-between text-zinc-400">
                   <div className="flex items-center gap-3">
                     <button
