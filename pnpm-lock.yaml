@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@hocuspocus/provider':
+        specifier: ^3.2.4
+        version: 3.2.4(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27)
       '@radix-ui/react-slot':
         specifier: ^1.2.3
         version: 1.2.3(@types/react@19.1.13)(react@19.1.1)
@@ -427,6 +430,15 @@ packages:
     resolution: {integrity: sha512-Z5kJ+wU3oA7MMIqVR9tyZRtjYPr4OC004Q4Rw7pgOKUOKkJfZ3O24nz3WYfGRpMDNmcOi3TwQOmgm7B7Tpii0w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+  '@hocuspocus/common@3.2.4':
+    resolution: {integrity: sha512-EfnW+zu2VqLrtSU2LV4/4BGtSJvODZv2GKVGRFXKMvqwB87d7MGIBRnRi2Rz/QgX81GfWG5yHG1ad9oZE8DHLQ==}
+
+  '@hocuspocus/provider@3.2.4':
+    resolution: {integrity: sha512-WQKq3oSq1fyUsA6wFRAovJmpQZeh+UOvH+iKbESDxgPK0Enj3I5MH1MKzzbbYyc8E3loMaHrfBQYQD72y77WqQ==}
+    peerDependencies:
+      y-protocols: ^1.0.6
+      yjs: ^13.6.8
+
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
     engines: {node: '>=18.18.0'}
@@ -473,6 +485,9 @@ packages:
 
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
+
+  '@lifeomic/attempt@3.1.0':
+    resolution: {integrity: sha512-QZqem4QuAnAyzfz+Gj5/+SLxqwCAw2qmt7732ZXodr6VDWGeYLG6w1i/vYLa55JQM9wRuBKLmXmiZ2P0LtE5rw==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -3339,6 +3354,18 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
+  ws@8.18.3:
+    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   wsl-utils@0.1.0:
     resolution: {integrity: sha512-h3Fbisa2nKGPxCpm89Hk33lBLsnaGBvctQopaBSOW/uIs6FTe1ATyAnKFJrzVs9vpGdsTe73WF3V4lIsk4Gacw==}
     engines: {node: '>=18'}
@@ -3682,6 +3709,22 @@ snapshots:
       '@eslint/core': 0.15.2
       levn: 0.4.1
 
+  '@hocuspocus/common@3.2.4':
+    dependencies:
+      lib0: 0.2.114
+
+  '@hocuspocus/provider@3.2.4(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27)':
+    dependencies:
+      '@hocuspocus/common': 3.2.4
+      '@lifeomic/attempt': 3.1.0
+      lib0: 0.2.114
+      ws: 8.18.3
+      y-protocols: 1.0.6(yjs@13.6.27)
+      yjs: 13.6.27
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.7':
@@ -3723,6 +3766,8 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
 
   '@juggle/resize-observer@3.4.0': {}
+
+  '@lifeomic/attempt@3.1.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -6853,6 +6898,8 @@ snapshots:
       strip-ansi: 7.1.2
 
   wrappy@1.0.2: {}
+
+  ws@8.18.3: {}
 
   wsl-utils@0.1.0:
     dependencies:
