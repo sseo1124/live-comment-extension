@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { storage } from "#imports";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -108,6 +109,8 @@ export function LoginForm({
 
       setStatus("success");
       setAuthResult(payload);
+
+      await storage.setItem("local:auth", payload);
     } catch (err) {
       console.error("Login failed", err);
       setStatus("idle");
