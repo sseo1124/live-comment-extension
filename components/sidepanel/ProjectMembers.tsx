@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   Item,
   ItemActions,
@@ -8,6 +7,7 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
+import { DialogMembers } from "./DialogMembers";
 
 export function ProjectMembers() {
   return (
@@ -42,9 +42,7 @@ export function ProjectMembers() {
           </ItemDescription>
         </ItemContent>
         <ItemActions>
-          <Button size="sm" variant="outline">
-            팀원 초대
-          </Button>
+          <DialogMembers />
         </ItemActions>
       </Item>
     </div>
