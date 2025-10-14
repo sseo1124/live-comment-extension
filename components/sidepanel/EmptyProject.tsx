@@ -1,5 +1,4 @@
 import { IconFolderCode } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -8,6 +7,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { DialogProject } from "./DialogProject";
 
 export function EmptyProject() {
   return (
@@ -24,7 +24,7 @@ export function EmptyProject() {
       </EmptyHeader>
       <EmptyContent>
         <div className="flex gap-2">
-          <Button>프로젝트 생성</Button>
+          <DialogProject />
         </div>
       </EmptyContent>
     </Empty>
