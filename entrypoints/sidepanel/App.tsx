@@ -1,4 +1,9 @@
-import { EmptyProject, LoginForm, ProjectSelect } from "@/components/sidepanel";
+import {
+  EmptyProject,
+  LoginForm,
+  ProjectMembers,
+  ProjectSelect,
+} from "@/components/sidepanel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function SidepanelApp() {
@@ -7,6 +12,7 @@ export default function SidepanelApp() {
       <LoginForm />
       <EmptyProject />
       <ProjectSelect />
+      <ProjectMembers />
     </ScrollArea>
   );
 }
