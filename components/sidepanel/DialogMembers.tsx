@@ -1,8 +1,10 @@
+import { MembersList } from "./MembersList";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -26,6 +28,8 @@ export function DialogMembers() {
             초대하기
           </Button>
         </div>
+        <DialogDescription>접근가능한 멤버들</DialogDescription>
+        <MembersList />
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>
             <Button type="button" variant="secondary">
