@@ -1,8 +1,6 @@
 import * as React from "react";
-import { PlusIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   Item,
   ItemActions,
@@ -13,6 +11,7 @@ import {
   ItemSeparator,
   ItemTitle,
 } from "@/components/ui/item";
+import { MembersRoleMenu } from "./MembersRoleMenu";
 
 const people = [
   {
@@ -50,9 +49,7 @@ export function MembersList() {
                 <ItemDescription>{person.email}</ItemDescription>
               </ItemContent>
               <ItemActions>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <PlusIcon />
-                </Button>
+                <MembersRoleMenu />
               </ItemActions>
             </Item>
             {index !== people.length - 1 && <ItemSeparator />}
