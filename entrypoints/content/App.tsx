@@ -9,7 +9,6 @@ import {
   SendHorizonal,
   Smile,
 } from "lucide-react";
-import Editor from "@/components/chateditor/Editor";
 
 type ToolbarMode = "add" | "palette" | "list";
 type CommentThread = {
@@ -169,7 +168,6 @@ export default function ContentApp() {
             <div className="flex items-start gap-3">
               <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-[radial-gradient(circle_at_30%_-10%,rgba(180,238,252,0.95),rgba(129,140,248,0.9))] shadow-[0_12px_40px_-18px_rgba(59,130,246,0.8)]" />
               <div className="w-[280px] rounded-2xl border border-zinc-200 bg-white/95 p-3 text-left shadow-[0_28px_65px_-32px_rgba(15,23,42,0.55)] backdrop-blur">
-                <Editor />
                 <div className="mt-2 flex items-center justify-between text-zinc-400">
                   <div className="flex items-center gap-3">
                     <button

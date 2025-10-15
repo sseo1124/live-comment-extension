@@ -9,7 +9,7 @@ export default defineConfig({
     permissions: ["tabs", "activeTab", "storage"],
     web_accessible_resources: [
       {
-        resources: ["overlay-main-world.js"],
+        resources: [],
         matches: ["*://*/*"],
       },
     ],
