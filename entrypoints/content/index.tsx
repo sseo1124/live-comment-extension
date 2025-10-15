@@ -10,7 +10,7 @@ export default defineContentScript({
   async main(ctx) {
     browser.runtime.onMessage.addListener(async (msg) => {
       if (msg?.type !== "JOIN_ROOM") return;
-      // const { projectId, roomId, accessToken } = msg.payload;
+      const { projectId, roomId, accessToken } = msg.payload;
 
       const ui = await createShadowRootUi(ctx, {
         name: "livecomment-ui",
@@ -22,7 +22,13 @@ export default defineContentScript({
           container.append(wrapper);
 
           const root = ReactDOM.createRoot(wrapper);
-          root.render(<App />);
+          root.render(
+            <App
+              projectId={projectId}
+              roomId={roomId}
+              accessToken={accessToken}
+            />
+          );
           return { root, wrapper };
         },
         onRemove: (elements) => {
