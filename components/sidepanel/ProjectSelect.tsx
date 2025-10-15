@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RoomEnterance } from "./RoomEntrance";
 
 type Project = {
   _id: string;
@@ -121,6 +122,13 @@ export function ProjectSelect({ accessToken }: ProjectSelectProps) {
           {error ?? "참여 중이거나 담당하고 있는 프로젝트 유형을 선택하세요."}
         </FieldDescription>
       </Field>
+
+      {selectedProjectId && (
+        <RoomEnterance
+          accessToken={accessToken}
+          projectId={selectedProjectId}
+        />
+      )}
     </div>
   );
 }
