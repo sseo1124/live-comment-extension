@@ -6,7 +6,7 @@ export default defineConfig({
   modules: ["@wxt-dev/module-react"],
   manifest: {
     action: {},
-    permissions: ["storage"],
+    permissions: ["tabs", "activeTab", "storage"],
     web_accessible_resources: [
       {
         resources: ["overlay-main-world.js"],

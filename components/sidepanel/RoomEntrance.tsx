@@ -16,15 +16,20 @@ type RoomEnteranceProps = {
 };
 
 export function RoomEnterance({ accessToken, projectId }: RoomEnteranceProps) {
-  const [seletedRoom, setSeletedRoom] = useState();
+  const [seletedRoomId, setSeletedRoomId] = useState();
+
+  const getActiveTab = async () => {
+    const tabs = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    return tabs[0];
+  };
 
   useEffect(() => {
     async function getRoomOntheProject() {
-      const tabs = await browser.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      const url = tabs[0].url;
+      const activeTab = await getActiveTab();
+      const url = activeTab.url;
 
       const response = await fetch(
         `${import.meta.env.WXT_API_URL.replace(/\/+$/, "")}/projects/${projectId}/rooms`,
@@ -39,14 +44,19 @@ export function RoomEnterance({ accessToken, projectId }: RoomEnteranceProps) {
       );
 
       const { room } = await response.json();
-      setSeletedRoom(room);
+      setSeletedRoomId(room._id);
     }
 
     getRoomOntheProject();
   }, [accessToken, projectId]);
 
-  function test() {
-    console.log(seletedRoom);
+  async function handleEnterRoom() {
+    const activeTab = await getActiveTab();
+
+    await browser.tabs.sendMessage(activeTab.id, {
+      type: "JOIN_ROOM",
+      payload: { projectId, accessToken, roomId: seletedRoomId },
+    });
   }
 
   return (
@@ -59,7 +69,7 @@ export function RoomEnterance({ accessToken, projectId }: RoomEnteranceProps) {
           </ItemDescription>
         </ItemContent>
         <ItemActions>
-          <Button variant="outline" size="sm" onClick={test}>
+          <Button variant="outline" size="sm" onClick={handleEnterRoom}>
             참여하기
           </Button>
         </ItemActions>
