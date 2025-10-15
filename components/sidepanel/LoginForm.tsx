@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { storage } from "#imports";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -48,15 +48,29 @@ const resolveLoginEndpoint = () => {
   return `${baseUrl.replace(/\/+$/, "")}/auth/login`;
 };
 
+type LoginFormProps = React.ComponentProps<"div"> & {
+  accessToken: string | null;
+  // eslint-disable-next-line no-unused-vars
+  onAccessTokenChange?: (token: string | null) => void;
+};
+
 export function LoginForm({
   className,
+  accessToken,
+  onAccessTokenChange,
   ...props
-}: React.ComponentProps<"div">) {
+}: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
   const [error, setError] = useState<string | null>(null);
   const [authResult, setAuthResult] = useState<LoginResponse | null>(null);
+
+  useEffect(() => {
+    if (!accessToken) {
+      setAuthResult(null);
+    }
+  }, [accessToken]);
 
   const canSubmit = useMemo(
     () => email.trim().length > 0 && password.trim().length > 0,
@@ -111,6 +125,7 @@ export function LoginForm({
       setAuthResult(payload);
 
       await storage.setItem("local:auth", payload);
+      onAccessTokenChange?.(payload.accessToken);
     } catch (err) {
       console.error("Login failed", err);
       setStatus("idle");
