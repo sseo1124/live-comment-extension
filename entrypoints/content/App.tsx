@@ -1,15 +1,13 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useRef, useState } from "react";
+import type { Socket } from "socket.io-client";
 import { io } from "socket.io-client";
 
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { List, Plus } from "lucide-react";
-
-type ContentAppProps = {
-  projectId: string;
-  roomId: string;
-  accessToken: string;
-};
-type ToolbarMode = "add" | "palette" | "list";
+import { CursorIndicator } from "./components/CursorIndicator";
+import { FloatingToolbar } from "./components/FloatingToolbar";
+import { ThreadComposer } from "./components/ThreadComposer";
+import { ThreadList } from "./components/ThreadList";
+import type { ContentAppProps, Thread, ToolbarMode } from "./types";
 
 export default function ContentApp({
   projectId,
@@ -18,6 +16,11 @@ export default function ContentApp({
 }: ContentAppProps) {
   const [joined, setJoined] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+
+  const [threads, setThreads] = useState<Thread[]>([]);
+  const [content, setContent] = useState("");
+  const socketRef = useRef<Socket | null>(null);
+
   const [mode, setMode] = useState<ToolbarMode>("palette");
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(
     null
@@ -31,6 +34,8 @@ export default function ContentApp({
         authorization: `bearer ${accessToken}`,
       },
     });
+
+    socketRef.current = socket;
 
     socket.on("connect", () => {
       socket.emit("join_room", { roomId }, (ack: any) => {
@@ -53,6 +58,12 @@ export default function ContentApp({
       setErr(e?.code || "ERROR");
     });
     socket.on("disconnect", () => setJoined(false));
+
+    socket.on("thread:created", (t: Thread) => {
+      setThreads((prev) =>
+        prev.some((x) => x._id === t._id) ? prev : [...prev, t]
+      );
+    });
 
     return () => {
       socket.disconnect();
@@ -104,61 +115,54 @@ export default function ContentApp({
     };
   }, [isAdding]);
 
+  const handleSubmit = () => {
+    if (!joined || !socketRef.current) return;
+    const trimmed = content.trim();
+    if (!trimmed) return;
+
+    const tempId = `tmp_${Date.now()}`;
+    setThreads((prev) => [
+      ...prev,
+      {
+        _id: tempId,
+        content: trimmed,
+        resolved: false,
+        createdAt: new Date().toISOString(),
+        createdBy: "me",
+        __v: 0,
+      } as any,
+    ]);
+
+    socketRef.current.emit(
+      "thread:create",
+      { roomId, content: trimmed, tempId },
+      (ack: any) => {
+        if (!ack?.ok) {
+          setThreads((prev) => prev.filter((t) => t._id !== tempId));
+          alert(`생성 실패: ${ack?.code || "ERROR"}`);
+          return;
+        }
+        setContent("");
+      }
+    );
+  };
   return (
     <div ref={rootRef} data-live-comment-root="true">
-      <div className="w-full bg-amber-100">
-        <div>{`projectId: ${projectId}/ roomId: ${roomId} / accessToken: ${accessToken}`}</div>
-        <div>
-          {joined ? "joined" : "not joined"} {err ? `(${err})` : ""}
+      <div className="w-80 rounded-lg bg-neutral-900 p-3 text-xs text-white shadow-lg">
+        <div className="mt-2 max-h-52 overflow-y-auto rounded-md border border-neutral-700 p-2">
+          <ThreadList threads={threads} />
         </div>
+        <ThreadComposer
+          value={content}
+          disabled={!joined}
+          onChange={(value) => setContent(value)}
+          onSubmit={handleSubmit}
+        />
       </div>
-      <div className="fixed left-1/2 bottom-12 z-[2147483646] -translate-x-1/2 px-4">
-        <div className="rounded-full border border-white/15 bg-white/90 p-1 shadow-[0_20px_50px_-20px_rgba(15,23,42,0.45)] backdrop-blur">
-          <ToggleGroup
-            type="single"
-            value={mode}
-            onValueChange={(value) => {
-              const next = (value as ToolbarMode | "") || "palette";
-              setMode(next);
-            }}
-            className="gap-1 rounded-full bg-transparent"
-          >
-            <ToggleGroupItem
-              value="add"
-              className="h-11 w-11 rounded-full text-zinc-500 transition data-[state=on]:bg-zinc-900 data-[state=on]:text-white"
-              aria-label="Add note"
-            >
-              <Plus className="size-5" />
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="palette"
-              className="h-11 rounded-full px-6 text-zinc-600 transition data-[state=on]:bg-zinc-900 data-[state=on]:text-white"
-              aria-label="Palette modes"
-            >
-              <div className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-sky-200" />
-                <span className="h-3 w-3 rounded-full bg-sky-400" />
-                <span className="h-3 w-3 rounded-full bg-sky-200" />
-              </div>
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="list"
-              className="h-11 w-11 rounded-full text-zinc-500 transition data-[state=on]:bg-zinc-900 data-[state=on]:text-white"
-              aria-label="Open notes"
-            >
-              <List className="size-5" />
-            </ToggleGroupItem>
-          </ToggleGroup>
-        </div>
-      </div>
+      <FloatingToolbar mode={mode} onModeChange={(next) => setMode(next)} />
 
       {isAdding && cursorPos ? (
-        <div
-          className="pointer-events-none fixed z-[2147483647] flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[radial-gradient(circle_at_30%_-10%,rgba(180,238,252,0.95),rgba(129,140,248,0.9))] shadow-[0_12px_40px_-18px_rgba(59,130,246,0.8)]"
-          style={{ left: cursorPos.x, top: cursorPos.y }}
-        >
-          <span className="sr-only">Comment placement cursor</span>
-        </div>
+        <CursorIndicator x={cursorPos.x} y={cursorPos.y} />
       ) : null}
     </div>
   );
