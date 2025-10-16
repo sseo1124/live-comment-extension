@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
+
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { List, Plus } from "lucide-react";
 
@@ -14,13 +16,31 @@ export default function ContentApp({
   roomId,
   accessToken,
 }: ContentAppProps) {
+  const [user, setUser] = useState();
   const [mode, setMode] = useState<ToolbarMode>("palette");
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(
     null
   );
   const rootRef = useRef<HTMLDivElement | null>(null);
-
   const isAdding = mode === "add";
+
+  useEffect(() => {
+    const socket = io(import.meta.env.WXT_API_URL, {
+      extraHeaders: {
+        authorization: `bearer ${accessToken}`,
+      },
+    });
+
+    socket.on("connect", () => {
+      socket.emit("whoami", (username) => {
+        setUser(username);
+      });
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [accessToken]);
 
   useEffect(() => {
     if (!isAdding) {
@@ -71,6 +91,7 @@ export default function ContentApp({
     <div ref={rootRef} data-live-comment-root="true">
       <div className="w-full bg-amber-100">
         <div>{`projectId: ${projectId}/ roomId: ${roomId} / accessToken: ${accessToken}`}</div>
+        <div>{user}</div>
       </div>
       <div className="fixed left-1/2 bottom-12 z-[2147483646] -translate-x-1/2 px-4">
         <div className="rounded-full border border-white/15 bg-white/90 p-1 shadow-[0_20px_50px_-20px_rgba(15,23,42,0.45)] backdrop-blur">
