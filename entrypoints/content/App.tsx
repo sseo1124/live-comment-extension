@@ -143,6 +143,18 @@ export default function ContentApp({
           return;
         }
         setContent("");
+        setThreads((prev) => {
+          const withoutTemp = prev.filter((t) => t._id !== tempId);
+          const createdThread = ack?.thread as Thread | undefined;
+          if (
+            createdThread &&
+            !withoutTemp.some((thread) => thread._id === createdThread._id)
+          ) {
+            return [...withoutTemp, createdThread];
+          }
+
+          return withoutTemp;
+        });
       }
     );
   };

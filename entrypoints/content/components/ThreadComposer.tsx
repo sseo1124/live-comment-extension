@@ -24,6 +24,7 @@ export function ThreadComposer({
         className="flex-1 rounded-md border border-neutral-700 bg-neutral-800 px-3 py-2 text-white placeholder-neutral-400 outline-none focus:ring-2 focus:ring-indigo-500/50"
       />
       <button
+        type="submit"
         onClick={onSubmit}
         disabled={!canSubmit}
         className="rounded-md bg-indigo-600 px-3 py-2 font-medium hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
