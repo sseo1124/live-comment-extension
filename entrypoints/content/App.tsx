@@ -16,7 +16,8 @@ export default function ContentApp({
   roomId,
   accessToken,
 }: ContentAppProps) {
-  const [user, setUser] = useState();
+  const [joined, setJoined] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
   const [mode, setMode] = useState<ToolbarMode>("palette");
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(
     null
@@ -32,15 +33,31 @@ export default function ContentApp({
     });
 
     socket.on("connect", () => {
-      socket.emit("whoami", (username) => {
-        setUser(username);
+      socket.emit("join_room", { roomId }, (ack: any) => {
+        if (ack?.ok) {
+          setJoined(true);
+        } else {
+          setJoined(false);
+          setErr(ack?.code || "JOIN_ERROR");
+        }
       });
     });
+
+    socket.on("room_joined", () => setJoined(true));
+    socket.on("connect_error", (e) => {
+      setJoined(false);
+      setErr(e?.message || "CONNECT_ERROR");
+    });
+    socket.on("error", (e: any) => {
+      setJoined(false);
+      setErr(e?.code || "ERROR");
+    });
+    socket.on("disconnect", () => setJoined(false));
 
     return () => {
       socket.disconnect();
     };
-  }, [accessToken]);
+  }, [accessToken, roomId]);
 
   useEffect(() => {
     if (!isAdding) {
@@ -91,7 +108,9 @@ export default function ContentApp({
     <div ref={rootRef} data-live-comment-root="true">
       <div className="w-full bg-amber-100">
         <div>{`projectId: ${projectId}/ roomId: ${roomId} / accessToken: ${accessToken}`}</div>
-        <div>{user}</div>
+        <div>
+          {joined ? "joined" : "not joined"} {err ? `(${err})` : ""}
+        </div>
       </div>
       <div className="fixed left-1/2 bottom-12 z-[2147483646] -translate-x-1/2 px-4">
         <div className="rounded-full border border-white/15 bg-white/90 p-1 shadow-[0_20px_50px_-20px_rgba(15,23,42,0.45)] backdrop-blur">
