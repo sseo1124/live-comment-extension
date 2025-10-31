@@ -8,36 +8,25 @@ export default defineContentScript({
   cssInjectionMode: "ui",
 
   async main(ctx) {
-    browser.runtime.onMessage.addListener(async (msg) => {
-      if (msg?.type !== "JOIN_ROOM") return;
-      const { projectId, roomId, accessToken } = msg.payload;
+    const ui = await createShadowRootUi(ctx, {
+      name: "livecomment-ui",
+      position: "inline",
+      anchor: "body",
+      append: "first",
+      onMount: (container) => {
+        const wrapper = document.createElement("div");
+        container.append(wrapper);
 
-      const ui = await createShadowRootUi(ctx, {
-        name: "livecomment-ui",
-        position: "inline",
-        anchor: "body",
-        append: "first",
-        onMount: (container) => {
-          const wrapper = document.createElement("div");
-          container.append(wrapper);
-
-          const root = ReactDOM.createRoot(wrapper);
-          root.render(
-            <App
-              projectId={projectId}
-              roomId={roomId}
-              accessToken={accessToken}
-            />
-          );
-          return { root, wrapper };
-        },
-        onRemove: (elements) => {
-          elements?.root.unmount();
-          elements?.wrapper.remove();
-        },
-      });
-
-      ui.mount();
+        const root = ReactDOM.createRoot(wrapper);
+        root.render(<App />);
+        return { root, wrapper };
+      },
+      onRemove: (elements) => {
+        elements?.root.unmount();
+        elements?.wrapper.remove();
+      },
     });
+
+    ui.mount();
   },
 });
